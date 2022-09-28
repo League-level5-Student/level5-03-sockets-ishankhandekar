@@ -5,5 +5,7 @@ package _02_Chat_Application;
  */
 
 public class ChatApp {
-
+	public void run() {
+		
+	}
 }

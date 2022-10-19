@@ -1,5 +1,10 @@
 package _02_Chat_Application;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -53,7 +58,25 @@ public class ChatApp extends JFrame {
 			server.start(this);
 
 		} else {
-		
+			try {
+				BufferedReader br = new BufferedReader(new FileReader("src/_02_Chat_Application/log.txt"));
+				
+				String line = br.readLine();
+				line = br.readLine();
+				while(line != null){
+					messages.setText(messages.getText() + "\n" + line);
+					line = br.readLine();
+				}
+				
+				br.close();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			String name = JOptionPane.showInputDialog("What would you like your name to be?");
 			setTitle("CLIENT");
 			String ipStr = JOptionPane.showInputDialog("Enter the IP Address");

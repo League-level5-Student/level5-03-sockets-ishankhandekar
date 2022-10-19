@@ -1,7 +1,8 @@
 
 package _02_Chat_Application;
 
-	import java.io.IOException;
+	import java.io.FileWriter;
+import java.io.IOException;
 	import java.io.ObjectInputStream;
 	import java.io.ObjectOutputStream;
 	import java.net.Socket;
@@ -12,7 +13,7 @@ package _02_Chat_Application;
 	public class ChatClient {
 		private String ip;
 		private int port;
-
+		ChatApp ca;
 		Socket connection;
 
 		ObjectOutputStream os;
@@ -24,6 +25,7 @@ package _02_Chat_Application;
 		}
 
 		public void start(ChatApp ca){
+			this.ca = ca;
 			try {
 
 				connection = new Socket(ip, port);
@@ -41,9 +43,10 @@ package _02_Chat_Application;
 			
 			while (connection.isConnected()) {
 				try {
-					JOptionPane.showMessageDialog(null, is.readObject());
-					System.out.println(is.readObject());
-					ca.receiveMessages(is.readObject().toString());
+					String rObj = is.readObject().toString();
+					JOptionPane.showMessageDialog(null, rObj);
+					System.out.println(rObj);
+					ca.receiveMessages(rObj);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -56,6 +59,15 @@ package _02_Chat_Application;
 				if (os != null) {
 					os.writeObject(message);
 					os.flush();
+				}
+				try {
+					FileWriter fw = new FileWriter("src/_02_Chat_Application/log.txt");
+					fw.write(ca.messages.getText());
+				System.out.println(ca.messages.getText());
+						
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

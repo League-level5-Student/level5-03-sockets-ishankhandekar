@@ -1,6 +1,7 @@
 package _02_Chat_Application;
 
 import java.io.EOFException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -19,12 +20,14 @@ public class ChatServer {
 
 	ObjectOutputStream os;
 	ObjectInputStream is;
+	ChatApp ca;
 
 	public ChatServer(int port) {
 		this.port = port;
 	}
 
 	public void start(ChatApp ca){
+		this.ca = ca;
 		try {
 			server = new ServerSocket(port, 100);
 
@@ -37,8 +40,9 @@ public class ChatServer {
 
 			while (connection.isConnected()) {
 				try {
-					JOptionPane.showMessageDialog(null, is.readObject());
-					ca.receiveMessages(is.readObject().toString());
+					String rObj = is.readObject().toString();
+					JOptionPane.showMessageDialog(null, rObj);
+					ca.receiveMessages(rObj);
 					
 				}catch(EOFException e) {
 					JOptionPane.showMessageDialog(null, "Connection Lost");
@@ -67,8 +71,19 @@ public class ChatServer {
 		try {
 			if (os != null) {
 				os.writeObject(message);
+				
 				os.flush();
 			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		try {
+			FileWriter fw = new FileWriter("src/_02_Chat_Application/log.txt");
+			fw.write(ca.messages.getText());
+		System.out.println(ca.messages.getText());
+				
+			fw.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
